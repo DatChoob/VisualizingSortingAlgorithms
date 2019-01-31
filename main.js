@@ -2,74 +2,80 @@
 let width = 500;
 let height = 500;
 let sourceArray = new Array();
-let scale = 20;
+let scale = 10;
 let steps;
+let canvas;
+setup();
+var sortingTimer = setInterval(draw, 50);
 
+var successCounter = 0;
+var isSortingFinished = false;
+var isSuccessAnimationFinished = false;
+
+function createCanvas(width, height) {
+    canvas = new Canvas(document.getElementById("myCanvas"), width, height);
+}
 
 function setup() {
     createCanvas(width, height);
     sourceArray = shuffleArray(generatePoints());
     steps = doQuickSort();
+    drawPoints(sourceArray);
 }
 
-let loops = 0;
-let isSortingFinished = false;
-let isSuccessAnimationFinished = false;
-let successCounter = 0;
-function draw() {
 
+function draw() {
     if (!isSortingFinished) {
-        if (loops++ % 2 == 0) {
-            step = steps.shift();
-            if (step == null) {
-                isSortingFinished = true;
-                return;
-            }
-            swap(sourceArray, step.indexA, step.indexB);
-            drawPoints(sourceArray, step.indexA, step.indexB);
+        step = steps.shift();
+        if (step == null) {
+            isSortingFinished = true;
+            return;
         }
+        swap(sourceArray, step.indexA, step.indexB);
+        drawPoints(sourceArray, step.indexA, step.indexB);
     } else if (!isSuccessAnimationFinished && successCounter != sourceArray.length) {
         drawSuccess(sourceArray, successCounter++);
-        if(successCounter== sourceArray.length)
-        isSuccessAnimationFinished=true;
+        if (successCounter == sourceArray.length) {
+            isSuccessAnimationFinished = true;
+            clearInterval(sortingTimer);
+        }
     }
 
 }
 
 
 function drawPoints(array, swappedIndexA, swappedIndexB) {
-    background(150);
+    canvas.background('grey');
     for (let i = 0; i < array.length; i++) {
-
         if (scale == 1) {
             if (i == swappedIndexA || i == swappedIndexB) {
-                stroke('red');
-            } else stroke(255);
-
-            line((i * scale), height, ((i + 1) * scale), height - array[i])
+                canvas.stroke('red');
+            } else canvas.stroke('white');
+            canvas.line((i * scale), height, ((i + 1) * scale), height - array[i])
         } else {
+            canvas.stroke('black')
             if (i == swappedIndexA || i == swappedIndexB) {
-                fill('red');
-            } else fill(255);
-            rect((i * scale), height - array[i], scale, array[i]);
+                canvas.setFillStyle('red');
+            } else canvas.setFillStyle('white');
+            canvas.rect((i * scale), height - array[i], scale, array[i]);
         }
     }
 }
 
 
 function drawSuccess(array, successCounter) {
-    background(150);
+    canvas.background('grey');
     for (let i = 0; i < array.length; i++) {
         if (scale == 1) {
             if (i <= successCounter) {
-                stroke('green');
-            } else stroke(255);
-            line((i * scale), height, ((i + 1) * scale), height - array[i]);
+                canvas.stroke('green');
+            } else canvas.stroke('white');
+            canvas.line((i * scale), height, ((i + 1) * scale), height - array[i]);
         } else {
             if (i <= successCounter) {
-                fill('green');
-            } else fill(255);
-            rect((i * scale), height - array[i], scale, array[i]);
+                canvas.setFillStyle('green');
+            } else canvas.setFillStyle('white');
+            canvas.rect((i * scale), height - array[i], scale, array[i]);
 
         }
     }

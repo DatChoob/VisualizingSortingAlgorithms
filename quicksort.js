@@ -32,7 +32,7 @@ class Quicksort {
             if (arr[j] <= pivot) {
                 i++;
                 // swap arr[i] and arr[j] 
-                this._swap(arr, i , j);
+                this._swap(arr, i, j);
 
             }
         }
